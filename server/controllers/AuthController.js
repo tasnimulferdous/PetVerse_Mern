@@ -82,9 +82,10 @@ const updateUserProfile = async (req, res) => {
     try {
         const { userId, name, email, phone_number, location } = req.body;
 
-        if (!userId) {
-            return res.status(400).json({
-                message: 'User ID is required',
+        // Ensure the userId from the token matches the userId in the request
+        if (req.user._id !== userId) {
+            return res.status(403).json({
+                message: 'You are not authorized to update this profile',
                 success: false
             });
         }
@@ -150,9 +151,26 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+const logout = (req, res) => {
+    try {
+        // Invalidate the token on the client side by clearing it
+        res.status(200).json({
+            message: 'Logout successful',
+            success: true
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: 'Internal server error',
+            success: false
+        });
+    }
+};
+
 module.exports = {
     signup,
     login,
     updateUserProfile,
-    getUserProfile
+    getUserProfile,
+    logout
 }

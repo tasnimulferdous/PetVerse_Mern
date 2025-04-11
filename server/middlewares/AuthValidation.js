@@ -1,11 +1,13 @@
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 
 const signupValidation = (req, res, next) => {
     const schema = Joi.object({
         name: Joi.string().min(3).max(100).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(4).max(100).required(),
-        phone_number: Joi.string().min(10).max(15).required()
+        phone_number: Joi.string().min(10).max(15).required(),
+        location: Joi.string().optional()
     });
     const { error } = schema.validate(req.body);
     if (error) {
@@ -49,8 +51,31 @@ const updateProfileValidation = (req, res, next) => {
     next();
 };
 
+const isAuthenticated = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token from Authorization header
+
+    if (!token) {
+        return res.status(401).json({
+            message: 'Access denied. No token provided.',
+            success: false
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // Attach decoded user info to the request object
+        next();
+    } catch (err) {
+        return res.status(401).json({
+            message: 'Invalid token.',
+            success: false
+        });
+    }
+};
+
 module.exports = {
     signupValidation,
     loginValidation,
-    updateProfileValidation
+    updateProfileValidation,
+    isAuthenticated
 }

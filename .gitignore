@@ -1,2 +1,6 @@
-**/node_modules
-package-lock.json
+# Ignore node_modules in server and client directories
+/server/node_modules/
+/client/node_modules/
+
+# Ignore package-lock.json files
+**/package-lock.json

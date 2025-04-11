@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => 
     mongoose
-.connect("mongodb+srv://tasnimulferdous:DBzHypiS9THmv9aM@cluster0.6pf6qyz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })

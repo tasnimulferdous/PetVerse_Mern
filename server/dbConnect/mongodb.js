@@ -1,15 +1,26 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
-// DBzHypiS9THmv9aM
-// mongodb+srv://tasnimulferdous:DBzHypiS9THmv9aM@cluster0.kihrx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+// Get MongoDB URI from environment variables
+const MONGO_URI = process.env.MONGO_URI;
 
-const connectDB = async () => 
-    mongoose
-.connect("mongodb+srv://tasnimulferdous:DBzHypiS9THmv9aM@cluster0.6pf6qyz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log("MongoDB Connected..."))
-    .catch((err) => console.log(err));
+if (!MONGO_URI) {
+    console.error("MONGO_URI is not defined in the environment variables");
+    process.exit(1);
+}
+
+const connectDB = async () => {
+    try {
+        await mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("MongoDB Connected Successfully");
+    } catch (err) {
+        console.error("MongoDB Connection Error:", err.message);
+        process.exit(1);
+    }
+};
 
 module.exports = connectDB;

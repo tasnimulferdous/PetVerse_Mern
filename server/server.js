@@ -1,18 +1,26 @@
 const express = require("express");
+
+const app = express()
+
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const AuthRouter = require('./routes/AuthRouter');
 const authRoutes = require('./routes/auth.routes');
 const postRoutes = require('./routes/post.routes');
-const cors = require('cors');
-const dotenv = require("dotenv");
 
-// Initialize environment variables
-dotenv.config();
+const connectDB = require("./dbConnect/mongodb"); // Connect to MongoDB
 
-// Initialize express app
-const app = express();
+require('dotenv').config(); //
+connectDB(); // Connect to MongoDB
 
-// Connect to database
-const connectDB = require("./dbConnect/mongodb");
-connectDB();
+const PORT = process.env.PORT || 3000;//
+
+app.use(express.json());
+app.use(cors());
+// Removed redundant bodyParser.json() middleware
+// app.use(bodyParser.json());
+
+app.use('/auth', AuthRouter);
 
 // Middleware
 app.use(cors());
@@ -38,8 +46,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log("Server is running on port", PORT);
 });

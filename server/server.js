@@ -5,7 +5,6 @@ const app = express()
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const AuthRouter = require('./routes/AuthRouter');
-const authRoutes = require('./routes/auth.routes');
 const postRoutes = require('./routes/post.routes');
 
 const connectDB = require("./dbConnect/mongodb"); // Connect to MongoDB
@@ -20,7 +19,6 @@ app.use(cors());
 // Removed redundant bodyParser.json() middleware
 // app.use(bodyParser.json());
 
-app.use('/auth', AuthRouter);
 
 // Middleware
 app.use(cors());
@@ -28,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api", authRoutes);
+app.use('/auth', AuthRouter);
 app.use("/api/post", postRoutes);
 
 // Root route for API information
